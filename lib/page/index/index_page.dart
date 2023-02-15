@@ -124,7 +124,7 @@ class _IndexPageState extends State<IndexPage> {
           contentPadding: const EdgeInsets.symmetric(horizontal: 4),
           onTap: () async {
             await launchUrl(Uri.parse(
-                "https://github.com/gstory0404/fun_reader/blob/master/rule.md"));
+                "https://github.com/gstory0404/chatgpt_app"));
           },
         ),
         ListTile(
@@ -134,7 +134,7 @@ class _IndexPageState extends State<IndexPage> {
           contentPadding: const EdgeInsets.symmetric(horizontal: 4),
           onTap: () async {
             await launchUrl(Uri.parse(
-                "https://github.com/gstory0404/fun_reader/blob/master/rule.md"));
+                "https://github.com/gstory0404/chatgpt_app/blob/master/LICENSE"));
           },
         ),
       ],

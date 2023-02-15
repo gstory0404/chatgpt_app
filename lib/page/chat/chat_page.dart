@@ -37,7 +37,7 @@ class _ChatPageState extends State<ChatPage> {
     super.initState();
   }
 
-  void sendMsg()   {
+  Future<void> sendMsg()   async {
     if(CacheManager.instance.getChatGptKey()?.isEmpty ?? true){
       ToastUtil.showError(context, "请先设置ChatGPT key");
       return;
@@ -56,7 +56,8 @@ class _ChatPageState extends State<ChatPage> {
     }
     _listController.animateTo(0.0,
         duration: const Duration(milliseconds: 1000), curve: Curves.ease);
-    var sendMsg = "${ ChatUtil.getChatRelation(historyList)}\nQ:$text\nA:";
+    var sendMsg = "${await ChatUtil.getChatRelation(historyList)}\nQ:$text\nA:";
+    print(sendMsg);
     NetUtils.sendMessage(sendMsg, (value) {
       ChatgptEntity entity =
           ChatgptEntity.fromJson(convert.jsonDecode(value.toString()));
