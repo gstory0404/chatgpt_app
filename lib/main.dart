@@ -56,6 +56,7 @@ class MyApp extends StatelessWidget {
         Locale('en', 'US'),
       ],
       locale: const Locale('zh'),
+      debugShowCheckedModeBanner:false,
       home: const IndexPage(),
     );
   }
