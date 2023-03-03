@@ -17,8 +17,8 @@ class NetUtils {
   ) async {
     Dio dio = Dio();
     dio.options.headers = {
-      "Authorization":
-          "Bearer ${CacheManager.instance.getChatGptKey()}"
+      "Authorization": "Bearer ${CacheManager.instance.getChatGptKey()}",
+      "content-type": " application/json"
     };
     dio.options.connectTimeout = 2 * 60 * 1000; // 服务器链接超时，毫秒
     dio.options.receiveTimeout = 2 * 60 * 1000; // 响应流上前后两次接受到数据的间隔，毫秒
@@ -26,19 +26,20 @@ class NetUtils {
     dio.options.responseType = ResponseType.json;
     dio.post("https://api.openai.com/v1/completions", data: {
       "model": "text-davinci-003",
+      // "model": "gpt-3.5-turbo",
       "prompt": msg,
-      "max_tokens":2000,
-      "temperature": 0.7,
+      "max_tokens": 4000,
+      "temperature": 0.4,
       "top_p": 1,
       "frequency_penalty": 0,
       "presence_penalty": 0
     }).then((value) {
       success(value);
     }).catchError((e) {
-      if(e.runtimeType == DioError){
+      if (e.runtimeType == DioError) {
         DioError dioError = e;
         fail(dioError.message);
-      }else{
+      } else {
         fail(e);
       }
     });

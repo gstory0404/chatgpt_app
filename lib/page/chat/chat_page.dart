@@ -37,8 +37,8 @@ class _ChatPageState extends State<ChatPage> {
     super.initState();
   }
 
-  Future<void> sendMsg()   async {
-    if(CacheManager.instance.getChatGptKey()?.isEmpty ?? true){
+  Future<void> sendMsg() async {
+    if (CacheManager.instance.getChatGptKey()?.isEmpty ?? true) {
       ToastUtil.showError(context, "请先设置ChatGPT key");
       return;
     }
@@ -64,17 +64,21 @@ class _ChatPageState extends State<ChatPage> {
       isLoading = false;
       print(entity.toJson());
       if (entity.error != null) {
-        if(entity.error?.code == "429"){
-          ToastUtil.showError(
-              context, "请求过于频繁，请稍后再试");
-        }else {
+        if (entity.error?.code == "429") {
+          ToastUtil.showError(context, "请求过于频繁，请稍后再试");
+        } else {
           ToastUtil.showError(
               context, "${entity.error?.code} ${entity.error?.message}");
         }
       } else {
         if (mounted) {
           setState(() {
-            historyList.insert(0, HistoryBean(1,sendMsg: text, receiveMsg: entity,prompt: "$sendMsg${entity.choices?.first.text}"));
+            historyList.insert(
+                0,
+                HistoryBean(1,
+                    sendMsg: text,
+                    receiveMsg: entity,
+                    prompt: "$sendMsg${entity.choices?.first.text}"));
           });
         }
         _listController.animateTo(0.0,

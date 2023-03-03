@@ -15,7 +15,7 @@ class ChatText extends StatelessWidget {
     return SelectableText.rich(
       TextSpan(
         text: text, // default text style
-        children: <TextSpan>[],
+        children: const <TextSpan>[],
       ),
     );
   }
