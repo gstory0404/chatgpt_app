@@ -1,6 +1,9 @@
 # chatgpt_app
 ChatGPT应用，支持Android、iOS、MacOS、linux、Windows，通过api实现，目前提供andorid app，其他客户端自行打包
 
+> 使用openai gpt-3.5-turbo完成数据交互
+> 如果想用text-davinci-003 切换3.0分支
+
 ## 效果
 ![](https://github.com/gstory0404/chatgpt_app/blob/master/docs/chat.png)
 

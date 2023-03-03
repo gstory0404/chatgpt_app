@@ -9,9 +9,8 @@ import 'package:flutter/material.dart';
 
 class ChatReceiveItem extends StatefulWidget {
   HistoryBean historyBean;
-  bool isLast = false;
 
-  ChatReceiveItem(this.historyBean, this.isLast, {Key? key}) : super(key: key);
+  ChatReceiveItem(this.historyBean, {Key? key}) : super(key: key);
 
   @override
   State<ChatReceiveItem> createState() => _ChatReceiveItemState();
@@ -22,18 +21,18 @@ class _ChatReceiveItemState extends State<ChatReceiveItem>
   /// 持续时间为10秒的动画控制器
   late final AnimationController _controller;
 
-  late final Animation<String> _animation ;
+  late final Animation<String> _animation;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: widget.historyBean.receiveMsg!.choices![0].text!.length * 10),
+      duration: Duration(
+          milliseconds: widget.historyBean.message.content!.length * 10),
     )..forward();
-    _animation =
-        TextTween(end: widget.historyBean.receiveMsg!.choices![0].text ?? "")
-            .animate(_controller);
+    _animation = TextTween(end: widget.historyBean.message.content ?? "")
+        .animate(_controller);
   }
 
   @override
@@ -44,25 +43,53 @@ class _ChatReceiveItemState extends State<ChatReceiveItem>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "BOT",
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-          ),
-          Container(
-            margin: const EdgeInsets.only(top: 10),
-            padding: EdgeInsets.all(10),
-            //边框设置
-            decoration: BoxDecoration(
-              color: Colors.amber.shade50,
-              //设置四周圆角 角度
-              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-              //设置四周边框
-              border: Border.all(width: 1, color: Colors.amber.shade50),
-            ),
-            child: widget.isLast
-                ? _animationText()
-                : ChatText(
-                    widget.historyBean.receiveMsg!.choices![0].text ?? ""),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Image.asset(
+                "assets/images/logo_chatgpt.png",
+                width: 50,
+                height: 50,
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      widget.historyBean.message.role ?? "assistant",
+                      style: const TextStyle(
+                          fontSize: 14, fontWeight: FontWeight.bold),
+                    ),
+                    Container(
+                      height: 3,
+                    ),
+                    Text(
+                      "${DateTime.fromMillisecondsSinceEpoch(widget.historyBean.date)}",
+                      style: const TextStyle(fontSize: 10),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 10),
+                      padding: EdgeInsets.all(10),
+                      //边框设置
+                      decoration: BoxDecoration(
+                        color: Colors.amber.shade50,
+                        //设置四周圆角 角度
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(10.0)),
+                        //设置四周边框
+                        border:
+                            Border.all(width: 1, color: Colors.amber.shade50),
+                      ),
+                      child: widget.historyBean.date >
+                              DateTime.now().millisecondsSinceEpoch - 500
+                          ? _animationText()
+                          : ChatText(widget.historyBean.message.content ?? ""),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),

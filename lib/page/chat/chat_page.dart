@@ -50,15 +50,26 @@ class _ChatPageState extends State<ChatPage> {
     if (mounted) {
       setState(() {
         isLoading = true;
-        historyList.insert(0, HistoryBean(0, sendMsg: text));
+        historyList.insert(
+            0,
+            HistoryBean(
+                date: DateTime.now().millisecondsSinceEpoch,
+                message: Message(role: "user", content: text)));
         _inputController.clear();
       });
     }
     _listController.animateTo(0.0,
         duration: const Duration(milliseconds: 1000), curve: Curves.ease);
-    var sendMsg = "${await ChatUtil.getChatRelation(historyList)}\nQ:$text\nA:";
-    print(sendMsg);
-    NetUtils.sendMessage(sendMsg, (value) {
+    List<Message> messages = [];
+    for (int i = 0; i < historyList.length; i++) {
+      print("事件戳===》${historyList[i].date}");
+      if (messages.length < 7) {
+        messages.insert(0, historyList[i].message);
+      } else {
+        break;
+      }
+    }
+    NetUtils.sendMessage(messages, (value) {
       ChatgptEntity entity =
           ChatgptEntity.fromJson(convert.jsonDecode(value.toString()));
       isLoading = false;
@@ -75,10 +86,9 @@ class _ChatPageState extends State<ChatPage> {
           setState(() {
             historyList.insert(
                 0,
-                HistoryBean(1,
-                    sendMsg: text,
-                    receiveMsg: entity,
-                    prompt: "$sendMsg${entity.choices?.first.text}"));
+                HistoryBean(
+                    date: DateTime.now().millisecondsSinceEpoch,
+                    message: entity.choices!.first.message!));
           });
         }
         _listController.animateTo(0.0,
@@ -106,11 +116,11 @@ class _ChatPageState extends State<ChatPage> {
                 reverse: true,
                 controller: _listController,
                 itemBuilder: (BuildContext context, int index) {
-                  if (historyList[index].type == 0) {
+                  if (historyList[index].message.role == "user") {
                     return ChatSendItem(historyList[index]);
-                  }
-                  return ChatReceiveItem(historyList[index],
-                      index == 0 && historyList[index].receiveMsg != null);
+                  } else if (historyList[index].message.role == "assistant") {
+                    return ChatReceiveItem(historyList[index]);
+                  } else if (historyList[index].message.role == "system") {}
                 },
               ),
             ),

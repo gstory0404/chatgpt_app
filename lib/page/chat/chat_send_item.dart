@@ -8,10 +8,9 @@ import 'package:flutter/material.dart';
 /// @Description: dart类作用描述
 
 class ChatSendItem extends StatelessWidget {
-
   HistoryBean historyBean;
 
-  ChatSendItem(this.historyBean,{Key? key}) : super(key: key);
+  ChatSendItem(this.historyBean, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,22 +20,51 @@ class ChatSendItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          const Text(
-            "COOL",
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-          ),
-          Container(
-            margin: const EdgeInsets.only(top: 10),
-            padding: EdgeInsets.all(10),
-            //边框设置
-            decoration:  BoxDecoration(
-              color: Colors.teal.shade50,
-              //设置四周圆角 角度
-              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-              //设置四周边框
-              border: Border.all(width: 1, color: Colors.teal.shade50),
-            ),
-            child: ChatText(historyBean.sendMsg ?? ""),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      historyBean.message.role ?? "user",
+                      style: const TextStyle(
+                          fontSize: 14, fontWeight: FontWeight.bold),
+                    ),
+                    Container(
+                      height: 3,
+                    ),
+                    Text(
+                      "${DateTime.fromMillisecondsSinceEpoch(historyBean.date)}",
+                      style: const TextStyle(fontSize: 10),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 10),
+                      padding: EdgeInsets.all(10),
+                      //边框设置
+                      decoration: BoxDecoration(
+                        color: Colors.teal.shade50,
+                        //设置四周圆角 角度
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(10.0)),
+                        //设置四周边框
+                        border:
+                            Border.all(width: 1, color: Colors.teal.shade50),
+                      ),
+                      child: ChatText(historyBean.message.content ?? ""),
+                    ),
+                  ],
+                ),
+              ),
+              Image.asset(
+                "assets/images/logo_user.png",
+                width: 50,
+                height: 50,
+              )
+            ],
           ),
         ],
       ),

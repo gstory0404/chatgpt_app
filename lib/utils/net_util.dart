@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:chatgpt_app/manager/cache_manager.dart';
+import 'package:chatgpt_app/page/bean/chatgpt_entity.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/adapter.dart';
 
@@ -11,7 +12,7 @@ import 'package:dio/adapter.dart';
 
 class NetUtils {
   static Future<void> sendMessage(
-    String msg,
+    List<Message> msg,
     Function success,
     Function fail,
   ) async {
@@ -24,10 +25,12 @@ class NetUtils {
     dio.options.receiveTimeout = 2 * 60 * 1000; // 响应流上前后两次接受到数据的间隔，毫秒
     dio.options.contentType = ContentType.json.toString();
     dio.options.responseType = ResponseType.json;
-    dio.post("https://api.openai.com/v1/completions", data: {
-      "model": "text-davinci-003",
-      // "model": "gpt-3.5-turbo",
-      "prompt": msg,
+    for (var element in msg) {
+      print("send===> ${element.toJson()}");
+    }
+    dio.post("https://api.openai.com/v1/chat/completions", data: {
+      "model": "gpt-3.5-turbo",
+      "messages": msg,
       "max_tokens": 4000,
       "temperature": 0.4,
       "top_p": 1,

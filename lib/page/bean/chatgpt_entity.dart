@@ -8,17 +8,17 @@ class ChatgptEntity {
   String? object;
   int? created;
   String? model;
-  List<Choices>? choices;
   Usage? usage;
-  Error? error;
+  List<Choices>? choices;
+  ChatError? error;
 
   ChatgptEntity(
       {this.id,
       this.object,
       this.created,
       this.model,
-      this.choices,
       this.usage,
+      this.choices,
       this.error});
 
   ChatgptEntity.fromJson(Map<String, dynamic> json) {
@@ -26,56 +26,31 @@ class ChatgptEntity {
     object = json['object'];
     created = json['created'];
     model = json['model'];
+    usage = json['usage'] != null ? new Usage.fromJson(json['usage']) : null;
     if (json['choices'] != null) {
       choices = <Choices>[];
       json['choices'].forEach((v) {
-        choices!.add(Choices.fromJson(v));
+        choices!.add(new Choices.fromJson(v));
       });
     }
-    usage = json['usage'] != null ? Usage.fromJson(json['usage']) : null;
-    error = json['error'] != null ? Error.fromJson(json['error']) : null;
+    error = json['error'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['object'] = object;
-    data['created'] = created;
-    data['model'] = model;
-    if (choices != null) {
-      data['choices'] = choices!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['object'] = this.object;
+    data['created'] = this.created;
+    data['model'] = this.model;
+    if (this.usage != null) {
+      data['usage'] = this.usage!.toJson();
     }
-    if (usage != null) {
-      data['usage'] = usage!.toJson();
+    if (this.choices != null) {
+      data['choices'] = this.choices!.map((v) => v.toJson()).toList();
     }
-    return data;
-  }
-}
-
-class Choices {
-  String? text;
-  int? index;
-  String? logprobs;
-  String? finishReason;
-
-  Choices({this.text, this.index, this.logprobs, this.finishReason});
-
-  Choices.fromJson(Map<String, dynamic> json) {
-    text = json['text'];
-    while(text?.startsWith("\n") ?? false){
-      text = text?.replaceFirst("\n", "");
+    if (this.error != null) {
+      data['error'] = this.error!.toJson();
     }
-    index = json['index'];
-    logprobs = json['logprobs'];
-    finishReason = json['finish_reason'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['text'] = text;
-    data['index'] = index;
-    data['logprobs'] = logprobs;
-    data['finish_reason'] = finishReason;
     return data;
   }
 }
@@ -94,23 +69,71 @@ class Usage {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['prompt_tokens'] = promptTokens;
-    data['completion_tokens'] = completionTokens;
-    data['total_tokens'] = totalTokens;
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['prompt_tokens'] = this.promptTokens;
+    data['completion_tokens'] = this.completionTokens;
+    data['total_tokens'] = this.totalTokens;
     return data;
   }
 }
 
-class Error {
+class Choices {
+  Message? message;
+  String? finishReason;
+  int? index;
+
+  Choices({this.message, this.finishReason, this.index});
+
+  Choices.fromJson(Map<String, dynamic> json) {
+    message =
+        json['message'] != null ? new Message.fromJson(json['message']) : null;
+    finishReason = json['finish_reason'];
+    index = json['index'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.message != null) {
+      data['message'] = this.message!.toJson();
+    }
+    data['finish_reason'] = this.finishReason;
+    data['index'] = this.index;
+    return data;
+  }
+}
+
+class Message {
+  String? role;
+  String? content;
+
+  Message({this.role, this.content});
+
+  Message.fromJson(Map<String, dynamic> json) {
+    role = json['role'];
+    content = json['content'];
+    //剔除第一个换行符
+    if(content?.startsWith("\\n") ?? false){
+      content?.replaceFirst("\\n", "");
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['role'] = this.role;
+    data['content'] = this.content;
+    return data;
+  }
+}
+
+class ChatError {
   String? message;
   String? type;
   Null? param;
-  String? code;
+  Null? code;
 
-  Error({this.message, this.type, this.param, this.code});
+  ChatError({this.message, this.type, this.param, this.code});
 
-  Error.fromJson(Map<String, dynamic> json) {
+  ChatError.fromJson(Map<String, dynamic> json) {
     message = json['message'];
     type = json['type'];
     param = json['param'];
@@ -118,11 +141,11 @@ class Error {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['message'] = message;
-    data['type'] = type;
-    data['param'] = param;
-    data['code'] = code;
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['message'] = this.message;
+    data['type'] = this.type;
+    data['param'] = this.param;
+    data['code'] = this.code;
     return data;
   }
 }
