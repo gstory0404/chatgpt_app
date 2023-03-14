@@ -37,6 +37,7 @@ class _ChatReceiveItemState extends State<ChatReceiveItem>
 
   @override
   Widget build(BuildContext context) {
+    print(widget.historyBean.message.toJson());
     return Container(
       alignment: AlignmentDirectional.centerStart,
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
@@ -47,7 +48,7 @@ class _ChatReceiveItemState extends State<ChatReceiveItem>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Image.asset(
-                "assets/images/logo_chatgpt.png",
+                widget.historyBean.message.role == "system" ? "assets/images/logo_system.png" : "assets/images/logo_chatgpt.png",
                 width: 50,
                 height: 50,
               ),

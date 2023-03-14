@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:window_manager/window_manager.dart';
 
-import 'page/chat/chat_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,12 +42,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'ChatGPT',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: Colors.tealAccent,
       ),
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
       ],
       supportedLocales: const [

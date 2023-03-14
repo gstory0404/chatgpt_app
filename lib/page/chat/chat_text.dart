@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:markdown_widget/widget/markdown.dart';
 
 /// @Author: gstory
 /// @CreateDate: 2023/2/13 16:53
@@ -18,5 +19,9 @@ class ChatText extends StatelessWidget {
         children: const <TextSpan>[],
       ),
     );
+    // return MarkdownWidget(
+    //   data: text,
+    //   shrinkWrap: true,
+    // );
   }
 }

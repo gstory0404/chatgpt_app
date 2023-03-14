@@ -17,6 +17,7 @@ dependencies:
   cherry_toast: ^1.0.9
   url_launcher: ^6.1.7
   shared_preferences: ^2.0.17
+  markdown_widget: ^2.0.0+1
 
 dev_dependencies:
   flutter_test:

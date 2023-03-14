@@ -112,8 +112,8 @@ class Message {
     role = json['role'];
     content = json['content'];
     //剔除第一个换行符
-    if(content?.startsWith("\\n") ?? false){
-      content?.replaceFirst("\\n", "");
+    if(content?.startsWith("\n\n") ?? false){
+      content?.replaceFirst("\n\n", "");
     }
   }
 

@@ -1,10 +1,10 @@
 import 'dart:convert' as convert;
+import 'dart:io';
 
 import 'package:chatgpt_app/manager/cache_manager.dart';
 import 'package:chatgpt_app/page/bean/history_bean.dart';
 import 'package:chatgpt_app/page/chat/chat_receive_item.dart';
 import 'package:chatgpt_app/page/chat/chat_send_item.dart';
-import 'package:chatgpt_app/utils/chat_util.dart';
 import 'package:chatgpt_app/utils/net_util.dart';
 import 'package:chatgpt_app/utils/toast_util.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +42,7 @@ class _ChatPageState extends State<ChatPage> {
       ToastUtil.showError(context, "请先设置ChatGPT key");
       return;
     }
-    var text = _inputController.value.text;
+    var text = _inputController.value.text.trim();
     if (text.isEmpty) {
       ToastUtil.showError(context, "发送信息不能为空");
       return;
@@ -50,21 +50,42 @@ class _ChatPageState extends State<ChatPage> {
     if (mounted) {
       setState(() {
         isLoading = true;
-        historyList.insert(
-            0,
-            HistoryBean(
-                date: DateTime.now().millisecondsSinceEpoch,
-                message: Message(role: "user", content: text)));
+        if (text.startsWith("@system ")) {
+          historyList.insert(
+              0,
+              HistoryBean(
+                  date: DateTime.now().millisecondsSinceEpoch,
+                  message: Message(
+                      role: "system", content: text.replaceFirst("@system ", ""))));
+        } else {
+          historyList.insert(
+              0,
+              HistoryBean(
+                  date: DateTime.now().millisecondsSinceEpoch,
+                  message: Message(role: "user", content: text)));
+        }
         _inputController.clear();
+        _listController.animateTo(0.0,
+            duration: const Duration(milliseconds: 1000), curve: Curves.ease);
       });
     }
-    _listController.animateTo(0.0,
-        duration: const Duration(milliseconds: 1000), curve: Curves.ease);
     List<Message> messages = [];
     for (int i = 0; i < historyList.length; i++) {
       print("事件戳===》${historyList[i].date}");
-      if (messages.length < 7) {
-        messages.insert(0, historyList[i].message);
+      if (i < 10) {
+        if (historyList[i].message.content!.length > 2048) {
+          messages.insert(
+              0,
+              Message(
+                  role: historyList[i].message.role,
+                  content: historyList[i].message.content!.substring(0, 2048)));
+        } else {
+          messages.insert(
+              0,
+              Message(
+                  role: historyList[i].message.role,
+                  content: historyList[i].message.content));
+        }
       } else {
         break;
       }
@@ -82,14 +103,13 @@ class _ChatPageState extends State<ChatPage> {
               context, "${entity.error?.code} ${entity.error?.message}");
         }
       } else {
+        historyList.insert(
+            0,
+            HistoryBean(
+                date: DateTime.now().millisecondsSinceEpoch,
+                message: entity.choices!.first.message!));
         if (mounted) {
-          setState(() {
-            historyList.insert(
-                0,
-                HistoryBean(
-                    date: DateTime.now().millisecondsSinceEpoch,
-                    message: entity.choices!.first.message!));
-          });
+          setState(() {});
         }
         _listController.animateTo(0.0,
             duration: const Duration(milliseconds: 1000), curve: Curves.ease);
@@ -106,71 +126,82 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          Expanded(
-            child: Container(
-              child: ListView.builder(
-                itemCount: historyList.length,
-                reverse: true,
-                controller: _listController,
-                itemBuilder: (BuildContext context, int index) {
-                  if (historyList[index].message.role == "user") {
-                    return ChatSendItem(historyList[index]);
-                  } else if (historyList[index].message.role == "assistant") {
-                    return ChatReceiveItem(historyList[index]);
-                  } else if (historyList[index].message.role == "system") {}
-                },
+    return Scaffold(
+      appBar: (Platform.isAndroid || Platform.isIOS)
+          ? AppBar(
+              title: Text("聊天"),
+              centerTitle: true,
+            )
+          : null,
+      // resizeToAvoidBottomInset:false,
+      body: Container(
+        child: Column(
+          children: [
+            Expanded(
+              child: Container(
+                child: ListView.builder(
+                  itemCount: historyList.length,
+                  reverse: true,
+                  controller: _listController,
+                  itemBuilder: (BuildContext context, int index) {
+                    if (historyList[index].message.role == "user") {
+                      return ChatSendItem(historyList[index]);
+                    } else if (historyList[index].message.role == "assistant") {
+                      return ChatReceiveItem(historyList[index]);
+                    } else if (historyList[index].message.role == "system") {
+                      return ChatReceiveItem(historyList[index]);
+                    }
+                  },
+                ),
               ),
             ),
-          ),
-          Container(
-            height: 1,
-            color: Colors.black12,
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Container(
-                    child: TextField(
-                      maxLines: 5,
-                      minLines: 1,
-                      controller: _inputController,
-                      style: const TextStyle(
-                        fontSize: 16,
+            Container(
+              height: 1,
+              color: Colors.black12,
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Container(
+                      child: TextField(
+                        maxLines: 5,
+                        minLines: 1,
+                        controller: _inputController,
+                        style: const TextStyle(
+                          fontSize: 16,
+                        ),
+                        decoration: const InputDecoration(
+                          hintText: '请输入发送信息',
+                          border: InputBorder.none,
+                        ),
+                        cursorWidth: 2.0,
                       ),
-                      decoration: const InputDecoration(
-                        hintText: '请输入发送信息',
-                        border: InputBorder.none,
-                      ),
-                      cursorWidth: 2.0,
                     ),
                   ),
-                ),
-                ElevatedButton(
-                  onPressed: sendMsg,
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.teal.shade50,
-                    elevation: 1,
-                    minimumSize: const Size(0, 40),
-                    shape: const StadiumBorder(),
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    side: BorderSide(color: Colors.teal.shade50, width: 1),
+                  ElevatedButton(
+                    onPressed: sendMsg,
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.teal.shade50,
+                      elevation: 1,
+                      minimumSize: const Size(0, 40),
+                      shape: const StadiumBorder(),
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      side: BorderSide(color: Colors.teal.shade50, width: 1),
+                    ),
+                    child: const Text(
+                      "发送",
+                      style: TextStyle(fontSize: 16, color: Colors.black87),
+                    ),
                   ),
-                  child: const Text(
-                    "发送",
-                    style: TextStyle(fontSize: 16, color: Colors.black87),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
