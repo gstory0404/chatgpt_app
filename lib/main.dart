@@ -1,10 +1,14 @@
 import 'dart:io';
 
+import 'package:chatgpt_app/lang/translation_service.dart';
 import 'package:chatgpt_app/page/index/index_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:get/get.dart';
 import 'package:window_manager/window_manager.dart';
+
+import 'page/routes/app_pages.dart';
 
 
 void main() {
@@ -41,22 +45,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       theme: ThemeData(
         primaryColor: Colors.tealAccent,
       ),
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
-      supportedLocales: const [
-        Locale('zh', 'CH'),
-        Locale('en', 'US'),
-      ],
-      locale: const Locale('zh'),
+      //语言
+      locale: TranslationService.locale,
+      fallbackLocale: TranslationService.fallbackLocale,
+      translations: TranslationService(),
       debugShowCheckedModeBanner:false,
-      home: const IndexPage(),
+      //路由
+      initialRoute: AppPages.INITIAL,
+      getPages: AppPages.routes,
     );
   }
 }

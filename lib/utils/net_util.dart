@@ -1,9 +1,10 @@
 import 'dart:io';
 
-import 'package:chatgpt_app/manager/cache_manager.dart';
 import 'package:chatgpt_app/page/bean/chatgpt_entity.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/adapter.dart';
+
+import '../manager/sp_manager.dart';
 
 /// @Author: gstory
 /// @CreateDate: 2023/2/13 11:34
@@ -18,7 +19,7 @@ class NetUtils {
   ) async {
     Dio dio = Dio();
     dio.options.headers = {
-      "Authorization": "Bearer ${CacheManager.instance.getChatGptKey()}",
+      "Authorization": "Bearer ${SPManager.instance.getChatGptKey()}",
       "content-type": " application/json"
     };
     dio.options.connectTimeout = 2 * 60 * 1000; // 服务器链接超时，毫秒
@@ -26,7 +27,10 @@ class NetUtils {
     dio.options.contentType = ContentType.json.toString();
     dio.options.responseType = ResponseType.json;
     for (var element in msg) {
-      print("send===> ${element.toJson()}");
+      if(element.content!.length > 1024){
+        element.content = "";
+        print("send===> ${element.toJson()}");
+      }
     }
     dio.post("https://api.openai.com/v1/chat/completions", data: {
       "model": "gpt-3.5-turbo",

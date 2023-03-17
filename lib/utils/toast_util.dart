@@ -1,6 +1,7 @@
 import 'package:cherry_toast/cherry_toast.dart';
 import 'package:cherry_toast/resources/arrays.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 
 /// @Author: gstory
 /// @CreateDate: 2023/2/13 12:21
@@ -9,11 +10,11 @@ import 'package:flutter/cupertino.dart';
 
 class ToastUtil {
   /// 显示错误提示
-  static showError(BuildContext context, String msg) {
+  static showError(String msg) {
     CherryToast.error(
       title: Text(msg),
       animationType: AnimationType.fromTop,
       autoDismiss: true,
-    ).show(context);
+    ).show(Get.context!);
   }
 }
