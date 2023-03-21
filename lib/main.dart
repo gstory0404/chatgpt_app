@@ -8,12 +8,14 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:window_manager/window_manager.dart';
 
+import 'manager/sp_manager.dart';
 import 'page/routes/app_pages.dart';
 
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   initWindow();
+  SPManager.instance.init();
   runApp(const MyApp());
 }
 

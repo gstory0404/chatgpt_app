@@ -14,13 +14,21 @@ class LanguageUtil{
 
   //获取当前语言
   static String getLanguage(){
-    var language = SPManager().getLanguage();
+    var language = SPManager.instance.getLanguage();
+    print("language=$language");
     return language;
+  }
+
+  //更新app语言
+  static void updateLanguage(){
+    var lan = SPManager.instance.getLanguage();
+    var locale = getLanguageLocale(lan);
+    Get.updateLocale(locale);
   }
 
   //设置语言
   static void setLanguage(String lan){
-    SPManager().saveLanguage(lan);
+    SPManager.instance.saveLanguage(lan);
     var locale = getLanguageLocale(lan);
     Get.updateLocale(locale);
   }
