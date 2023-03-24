@@ -27,10 +27,7 @@ class NetUtils {
     dio.options.contentType = ContentType.json.toString();
     dio.options.responseType = ResponseType.json;
     for (var element in msg) {
-      if(element.content!.length > 1024){
-        element.content = "";
-        print("send===> ${element.toJson()}");
-      }
+      print("send===> ${element.toJson()}");
     }
     dio.post("https://api.openai.com/v1/chat/completions", data: {
       "model": "gpt-3.5-turbo",

@@ -24,10 +24,12 @@ class ChatCtr extends GetxController {
   bool isLoading = false;
 
   Future<void> sendMsg() async {
+    //检查是否存在key
     if (SPManager.instance.getChatGptKey()?.isEmpty ?? true) {
       ToastUtil.showError(Strings.emptyKey.tr);
       return;
     }
+    //检查是否有内容
     var text = inputController.value.text.trim();
     if (text.isEmpty) {
       ToastUtil.showError(Strings.emptyContent.tr);
@@ -39,13 +41,16 @@ class ChatCtr extends GetxController {
           0,
           HistoryBean(
               date: DateTime.now().millisecondsSinceEpoch,
+              type: ChatType.CHAT,
               message: Message(
-                  role: "system", content: text.replaceFirst("@system ", ""))));
+                  role: "system",
+                  content: text.replaceFirst("@system ", ""))));
     } else {
       historyList.insert(
           0,
           HistoryBean(
               date: DateTime.now().millisecondsSinceEpoch,
+              type: ChatType.CHAT,
               message: Message(role: "user", content: text)));
     }
     inputController.clear();
@@ -54,12 +59,12 @@ class ChatCtr extends GetxController {
     update();
     List<Message> messages = [];
     for (int i = 0; i < historyList.length; i++) {
-      if (i < 4) {
-        if (historyList[i].message.role == "assistant") {
+      if (messages.length < 2) {
+        if(historyList[i].type == ChatType.CHAT){
           messages.insert(0, historyList[i].message);
         }
       } else {
-        break;
+        continue;
       }
     }
     NetUtils.sendMessage(messages, (value) {
@@ -73,6 +78,7 @@ class ChatCtr extends GetxController {
             0,
             HistoryBean(
                 date: DateTime.now().millisecondsSinceEpoch,
+                type: ChatType.CHAT,
                 message: entity.choices!.first.message!));
         listController.animateTo(0.0,
             duration: const Duration(milliseconds: 1000), curve: Curves.ease);
