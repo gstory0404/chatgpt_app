@@ -2,7 +2,7 @@
 ChatGPT应用，支持Android、iOS、MacOS、linux、Windows，通过api实现，目前提供andorid app，其他客户端自行打包
 
 ## 效果
-<img src="https://github.com/gstory0404/chatgpt_app/blob/master/docs/chat_desktop.gif" width="30%">
+<img src="https://github.com/gstory0404/chatgpt_app/blob/master/docs/chat_desktop.gif" width="45%">
 
 > 使用openai gpt-3.5-turbo完成数据交互
 
