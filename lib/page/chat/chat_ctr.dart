@@ -100,10 +100,12 @@ class ChatCtr extends GetxController {
       }
     }, (error) {
       // print(entity);
-      ChatgptEntity entity =
+      if(error != null){
+        ChatgptEntity entity =
         ChatgptEntity.fromJson(convert.jsonDecode(error.toString()));
-      isLoading = false;
-      ToastUtil.showError(entity.error?.message ?? "");
+        isLoading = false;
+        ToastUtil.showError(entity.error?.message ?? "");
+      }
     });
   }
 }

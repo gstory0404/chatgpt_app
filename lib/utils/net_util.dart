@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:chatgpt_app/page/bean/chatgpt_entity.dart';
 import 'package:dio/dio.dart';
-import 'package:dio/adapter.dart';
 
 import '../manager/sp_manager.dart';
 
@@ -23,8 +22,8 @@ class NetUtils {
       "Authorization": "Bearer ${SPManager.instance.getChatGptKey()}",
       "content-type": " application/json"
     };
-    dio.options.connectTimeout = 2 * 60 * 1000; // 服务器链接超时，毫秒
-    dio.options.receiveTimeout = 2 * 60 * 1000; // 响应流上前后两次接受到数据的间隔，毫秒
+    dio.options.connectTimeout = const Duration(minutes: 1); // 服务器链接超时，1分钟
+    dio.options.receiveTimeout = const Duration(minutes: 1); // 响应流上前后两次接受到数据的间隔，1分钟
     dio.options.contentType = ContentType.json.toString();
     dio.options.responseType = ResponseType.json;
     // print("send===> ${json.encode(messages)}");
