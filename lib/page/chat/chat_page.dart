@@ -5,12 +5,8 @@ import 'package:chatgpt_app/page/bean/history_bean.dart';
 import 'package:chatgpt_app/page/chat/chat_ctr.dart';
 import 'package:chatgpt_app/page/chat/chat_receive_item.dart';
 import 'package:chatgpt_app/page/chat/chat_send_item.dart';
-import 'package:chatgpt_app/utils/net_util.dart';
-import 'package:chatgpt_app/utils/toast_util.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../bean/chatgpt_entity.dart';
 
 /// @Author: gstory
 /// @CreateDate: 2023/2/13 10:46
@@ -33,6 +29,28 @@ class ChatPage extends StatelessWidget {
             return Container(
               child: Column(
                 children: [
+                  controller.system.isEmpty
+                      ? Container()
+                      : Container(
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 4),
+                          alignment: Alignment.centerLeft,
+                          padding: EdgeInsets.all(10),
+                          //边框设置
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade100,
+                            //设置四周圆角 角度
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10.0)),
+                            //设置四周边框
+                            border: Border.all(
+                                width: 1, color: Colors.grey.shade100),
+                          ),
+                          child: Text(
+                            "${Strings.role.tr} : ${controller.system}",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
                   Expanded(
                     child: Container(
                       child: ListView.builder(

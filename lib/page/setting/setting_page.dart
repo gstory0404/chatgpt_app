@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:chatgpt_app/lang/strings.dart';
 import 'package:chatgpt_app/manager/sp_manager.dart';
 import 'package:chatgpt_app/page/setting/setting_key.dart';
-import 'package:chatgpt_app/page/setting/setting_key_dialog.dart';
+import 'package:chatgpt_app/page/setting/setting_chatgpt_dialog.dart';
 import 'package:chatgpt_app/page/setting/setting_language_dialog.dart';
 import 'package:chatgpt_app/utils/toast_util.dart';
 import 'package:flutter/material.dart';
@@ -39,14 +39,14 @@ class _SettingPageState extends State<SettingPage> {
             //设置 key
             ListTile(
               title: Text(
-                Strings.setKey.tr,
+                Strings.setChatGPT.tr,
                 style: TextStyle(fontSize: 16),
               ),
               trailing: Icon(Icons.keyboard_arrow_right),
               onTap: () {
                 // _showSetting(context);
                 Get.dialog(const AlertDialog(
-                  content: SettingKeyDialog(),
+                  content: SettingChatGPTDialog(),
                 ));
               },
             ),
@@ -94,7 +94,7 @@ class _SettingPageState extends State<SettingPage> {
     inputController.text = SPManager.instance.getChatGptKey() ?? "";
     //设置对话框
     AlertDialog alert = AlertDialog(
-      title: Text(Strings.setKey.tr),
+      title: Text(Strings.setChatGPT.tr),
       content: TextField(
         controller: inputController,
       ),

@@ -84,14 +84,34 @@ class SPManager {
     return await _preferences?.clear() ?? false;
   }
 
+  ///获取chatgpt key
+  String getChatGptKey() {
+    return get("chatGptKey", "");
+  }
+
   ///保存chatgpt key
   void saveChatGptKey(String? key) {
     save("chatGptKey", key);
   }
 
-  ///获取chatgpt key
-  String? getChatGptKey() {
-    return get("chatGptKey", "");
+  ///获取chatgpt 最大字符
+  int getChatMaxToken() {
+    return get("chatMaxToken", 2048);
+  }
+
+  ///保存chatgpt 最大字符
+  void saveGptMaxToken(int token) {
+    save("chatMaxToken", token);
+  }
+
+  ///获取chatgpt 最大上下文
+  int getChatMaxContext() {
+    return get("chatMaxContext", 2);
+  }
+
+  ///保存chatgpt key
+  void saveChatMaxContext(int context) {
+    save("chatMaxContext", context);
   }
 
   ///保存语言

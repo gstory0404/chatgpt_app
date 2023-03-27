@@ -17,7 +17,7 @@ class _ImagePageState extends State<ImagePage> {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      child: Text("正在处理。。。"),
+      child: Text("开发中。。。"),
     );
   }
 }

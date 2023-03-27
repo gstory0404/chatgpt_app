@@ -12,14 +12,22 @@ class Strings{
   static const String image = "image";
   //我的
   static const String setting = "setting";
+  //角色
+  static const String role = "role";
   //发送
   static const String send = "send";
   //ChatGPT key未设置
   static const String emptyKey = "emptyKey";
   //发送信息空
   static const String emptyContent = "emptyContent";
-  //设置key
+  //chatgpt设置
+  static const String setChatGPT = "setChatGPT";
+  //chatgpt设置key
   static const String setKey = "setKey";
+  //chatgpt设置最大字符
+  static const String setMaxSize = "setMaxSize";
+  //chatgpt设置最大上下文
+  static const String setMaxContent = "setMaxContent";
   //语言
   static const String aboutApp = "aboutApp";
   //关于app
@@ -30,6 +38,10 @@ class Strings{
   static const String submit = "submit";
   //请输入chatgpot key
   static const String setKeyTip = "setKeyTip";
+  //请输入字符数
+  static const String setMaxSizeTip = "setMaxSizeTip";
+  //请输入上下文数
+  static const String setMaxContentTip = "setMaxContentTip";
   //app主页
   static const String appHome = "appHome";
   //app主页

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:chatgpt_app/page/bean/chatgpt_entity.dart';
@@ -13,7 +14,7 @@ import '../manager/sp_manager.dart';
 
 class NetUtils {
   static Future<void> sendMessage(
-    List<Message> msg,
+    List<Message> messages,
     Function success,
     Function fail,
   ) async {
@@ -26,13 +27,11 @@ class NetUtils {
     dio.options.receiveTimeout = 2 * 60 * 1000; // 响应流上前后两次接受到数据的间隔，毫秒
     dio.options.contentType = ContentType.json.toString();
     dio.options.responseType = ResponseType.json;
-    for (var element in msg) {
-      print("send===> ${element.toJson()}");
-    }
+    // print("send===> ${json.encode(messages)}");
     dio.post("https://api.openai.com/v1/chat/completions", data: {
       "model": "gpt-3.5-turbo",
-      "messages": msg,
-      "max_tokens": 4000,
+      "messages": messages,
+      "max_tokens": SPManager.instance.getChatMaxToken(),
       "temperature": 0.4,
       "top_p": 1,
       "frequency_penalty": 0,
@@ -40,9 +39,10 @@ class NetUtils {
     }).then((value) {
       success(value);
     }).catchError((e) {
-      if (e.runtimeType == DioError) {
+      if (e is DioError) {
         DioError dioError = e;
-        fail(dioError.message);
+        fail(dioError.response);
+        print("请求异常 ${dioError.response}");
       } else {
         fail(e);
       }

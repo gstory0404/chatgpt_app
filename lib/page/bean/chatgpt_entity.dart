@@ -26,14 +26,16 @@ class ChatgptEntity {
     object = json['object'];
     created = json['created'];
     model = json['model'];
-    usage = json['usage'] != null ? new Usage.fromJson(json['usage']) : null;
+    usage = json['usage'] != null ? Usage.fromJson(json['usage']) : null;
     if (json['choices'] != null) {
       choices = <Choices>[];
       json['choices'].forEach((v) {
-        choices!.add(new Choices.fromJson(v));
+        choices!.add(Choices.fromJson(v));
       });
     }
-    error = json['error'];
+    if(json['error'] != null){
+      error = ChatError.fromJson(json['error']);
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -128,8 +130,8 @@ class Message {
 class ChatError {
   String? message;
   String? type;
-  Null? param;
-  Null? code;
+  String? param;
+  String? code;
 
   ChatError({this.message, this.type, this.param, this.code});
 

@@ -20,6 +20,9 @@ class ChatCtr extends GetxController {
 
   List<HistoryBean> historyList = [];
 
+  //角色扮演
+  String system = "";
+
   //是否请求中
   bool isLoading = false;
 
@@ -35,16 +38,20 @@ class ChatCtr extends GetxController {
       ToastUtil.showError(Strings.emptyContent.tr);
       return;
     }
-    isLoading = true;
+
+    //角色扮演
     if (text.startsWith("@system ")) {
-      historyList.insert(
-          0,
-          HistoryBean(
-              date: DateTime.now().millisecondsSinceEpoch,
-              type: ChatType.CHAT,
-              message: Message(
-                  role: "system",
-                  content: text.replaceFirst("@system ", ""))));
+      system = text.replaceFirst("@system ", "");
+      inputController.clear();
+      update();
+      return;
+      //清理角色
+    } else if (text.startsWith("@exit")) {
+      system = "";
+      update();
+      inputController.clear();
+      return;
+      //对话
     } else {
       historyList.insert(
           0,
@@ -52,21 +59,28 @@ class ChatCtr extends GetxController {
               date: DateTime.now().millisecondsSinceEpoch,
               type: ChatType.CHAT,
               message: Message(role: "user", content: text)));
+      inputController.clear();
     }
-    inputController.clear();
     listController.animateTo(0.0,
         duration: const Duration(milliseconds: 1000), curve: Curves.ease);
     update();
     List<Message> messages = [];
     for (int i = 0; i < historyList.length; i++) {
-      if (messages.length < 2) {
-        if(historyList[i].type == ChatType.CHAT){
-          messages.insert(0, historyList[i].message);
-        }
+      if (historyList[i].type == ChatType.CHAT && messages.length < SPManager.instance.getChatMaxContext()) {
+        messages.insert(0, historyList[i].message);
       } else {
         continue;
       }
     }
+    if (system.isNotEmpty) {
+      messages.insert(0, Message(role: "system", content: system));
+    }
+    getChat(messages);
+  }
+
+  //请求chat
+  void getChat(List<Message> messages) {
+    isLoading = true;
     NetUtils.sendMessage(messages, (value) {
       ChatgptEntity entity =
           ChatgptEntity.fromJson(convert.jsonDecode(value.toString()));
@@ -85,9 +99,11 @@ class ChatCtr extends GetxController {
         update();
       }
     }, (error) {
-      print(error);
+      // print(entity);
+      ChatgptEntity entity =
+        ChatgptEntity.fromJson(convert.jsonDecode(error.toString()));
       isLoading = false;
-      ToastUtil.showError(error);
+      ToastUtil.showError(entity.error?.message ?? "");
     });
   }
 }
