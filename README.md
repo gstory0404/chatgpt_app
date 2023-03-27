@@ -7,10 +7,11 @@ ChatGPT应用，支持Android、iOS、MacOS、linux、Windows，通过api实现�
 > 使用openai gpt-3.5-turbo完成数据交互
 
 ## 角色扮演
-角色调教可以参考 https://github.com/PlexPt/awesome-chatgpt-prompts-zh
+角色调教可以参考 https://github.com/PlexPt/awesome-chatgpt-prompts-zh ，
+问题需要单独提问，不要写到描述中
 ```
 //进入角色
-@system 「内容」 
+@system 「角色描述」 
 
 //退出角色
 @exit 
