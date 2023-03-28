@@ -21,7 +21,8 @@ ChatGPT应用，支持Android、iOS、MacOS、linux、Windows，通过api实现�
 设置-ChatGPT设置
 
 ### key
-opanai申请到的key
+注册一个[ChatGPT](https://chat.openai.com/)账号，获取key，在APP右上角设置中填写，即可使用了。
+注册流程可以参考[blog](https://blog.gstory.cn/archives/78.html)
 
 ### 字符数
 请求的最大token数
@@ -29,6 +30,3 @@ opanai申请到的key
 ### 上下文关联数
 聊天关联条数
 
-## 设置
-注册一个[ChatGPT](https://chat.openai.com/)账号，获取key，在APP右上角设置中填写，即可使用了。
-注册流程可以参考[blog](https://blog.gstory.cn/archives/78.html)
